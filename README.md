@@ -21,11 +21,11 @@ https://artificialintelligence.sg/taskflow/api/tasks
 
 ### Screenshot: Railway dashboard
 
-![Railway dashboard](screenshots/dashboard.png)
+![Railway dashboard](screenshots/railway-dashboard.png)
 
 ### Screenshot: Live application
 
-![Live application](screenshots/application.png)
+![Live application](screenshots/live-application.png)
 
 ### Errors and failures
 
