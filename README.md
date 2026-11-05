@@ -10,7 +10,7 @@ Module 3 built the API (this repo); **Module 4 deploys it** with Docker, GitHub 
 TaskFlow API deployed on Railway (`/` is a small web page, `/api/tasks` is the JSON API):
 
 ```
-RAILWAY_URL_PLACEHOLDER/api/tasks
+https://taskflow-api-production-489b.up.railway.app/api/tasks
 ```
 
 Backup demo of the same API on my own domain (UGREEN NAS + Cloudflare Tunnel):
