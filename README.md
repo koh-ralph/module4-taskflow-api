@@ -48,7 +48,7 @@ What changed from the Module 3 code so it could be deployed:
 
 ```
 Stretch goal: CI pipeline (GitHub Actions) that builds, tests and publishes a Docker image to Docker Hub
-Links: https://github.com/koh-ralph/module3-taskflow-api/actions
+Links: https://github.com/koh-ralph/module4-taskflow-api/actions
        https://hub.docker.com/r/mrpythonsg/taskflow-api/tags
        https://artificialintelligence.sg/taskflow/  (frontend demo on my own domain)
 Notes: .github/workflows/ci.yml runs three jobs on every push to main: build (mvn package, uploads the jar),
