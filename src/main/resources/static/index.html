@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskFlow API</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;color:#1f2328}
+  h1{margin-bottom:4px} .sub{color:#57606a;margin-top:0}
+  ul{padding-left:0;list-style:none} li{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid #d0d7de;border-radius:8px;margin:8px 0}
+  li .t{flex:1} .done .t{text-decoration:line-through;color:#8b949e}
+  form{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin:16px 0} input,button{padding:8px;font-size:14px}
+  form button{grid-column:1/-1} button{cursor:pointer} code{background:#f6f8fa;padding:2px 5px;border-radius:4px}
+  #summary{white-space:pre-wrap;background:#f6f8fa;padding:12px;border-radius:8px;min-height:1em}
+</style>
+</head>
+<body>
+<h1>TaskFlow API</h1>
+<p class="sub">Spring Boot REST API, deployed on Railway. Raw JSON at <a href="api/tasks"><code>/api/tasks</code></a>.</p>
+<form id="f">
+  <input name="title" placeholder="Title" required>
+  <input name="description" placeholder="Description">
+  <button>Add task (POST /api/tasks)</button>
+</form>
+<ul id="list"><li>Loading…</li></ul>
+<p><button id="sum">AI summary (GET /api/tasks/summary)</button></p>
+<div id="summary"></div>
+<script>
+const api='api/tasks';
+async function load(){
+  const t=await (await fetch(api)).json();
+  document.getElementById('list').innerHTML=t.length?t.map(x=>`<li class="${x.completed?'done':''}">
+    <span class="t"><b>#${x.id}</b> ${x.title}<br><small>${x.description||''}</small></span>
+    ${x.completed?'':`<button onclick="done(${x.id})">Complete</button>`}<button onclick="del(${x.id})">Delete</button></li>`).join(''):'<li>No tasks yet. Add one above.</li>';
+}
+async function done(id){await fetch(`${api}/${id}/complete`,{method:'PUT'});load();}
+async function del(id){await fetch(`${api}/${id}`,{method:'DELETE'});load();}
+document.getElementById('f').onsubmit=async e=>{
+  e.preventDefault();const d=Object.fromEntries(new FormData(e.target));d.completed=false;
+  await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});e.target.reset();load();
+};
+document.getElementById('sum').onclick=async()=>{
+  const el=document.getElementById('summary');el.textContent='Thinking…';
+  const r=await fetch(`${api}/summary`);el.textContent=r.ok?await r.text():`Summary unavailable (HTTP ${r.status}). Set OPENAI_API_KEY on the server to enable it.`;
+};
+load();
+</script>
+</body>
+</html>

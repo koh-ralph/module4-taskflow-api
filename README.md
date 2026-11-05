@@ -1,5 +1,66 @@
 # TaskFlow API
 
+Task-management REST API built with Spring Boot for the NTU AI Engineering course.
+Module 3 built the API (this repo); **Module 4 deploys it** with Docker, GitHub Actions and Railway.
+
+## Module 4 - End of Module Assignment
+
+### Live application URL
+
+TaskFlow API deployed on Railway (`/` is a small web page, `/api/tasks` is the JSON API):
+
+```
+RAILWAY_URL_PLACEHOLDER/api/tasks
+```
+
+Backup demo of the same API on my own domain (UGREEN NAS + Cloudflare Tunnel):
+
+```
+https://artificialintelligence.sg/taskflow/api/tasks
+```
+
+### Screenshot: Railway dashboard
+
+![Railway dashboard](screenshots/dashboard.png)
+
+### Screenshot: Live application
+
+![Live application](screenshots/application.png)
+
+### Errors and failures
+
+```
+None
+```
+
+What changed from the Module 3 code so it could be deployed:
+
+- `server.port=${PORT:8080}` so the app listens on the port Railway injects.
+- `OPENAI_API_KEY` now has a `not-set` fallback, so the app starts without a key and only
+  `/api/tasks/summary` is disabled until a key is added as a Railway variable.
+- `railway.json` tells Railway to build from the existing `Dockerfile` and health-check `/api/tasks`.
+- Railway runs with `SPRING_PROFILES_ACTIVE=demo`, so the in-memory board starts with three sample
+  tasks and resets every hour (the store is a HashMap and empties on every restart anyway).
+- `static/index.html` is a one-page UI that calls the API, so the root URL shows something useful.
+- `docker-compose.yml` for a one-command local run.
+
+### Stretch goal (optional)
+
+```
+Stretch goal: CI pipeline (GitHub Actions) that builds, tests and publishes a Docker image to Docker Hub
+Links: https://github.com/koh-ralph/module3-taskflow-api/actions
+       https://hub.docker.com/r/mrpythonsg/taskflow-api/tags
+       https://artificialintelligence.sg/taskflow/  (frontend demo on my own domain)
+Notes: .github/workflows/ci.yml runs three jobs on every push to main: build (mvn package, uploads the jar),
+       test (mvn test, uploads surefire reports) and publish (docker/build-push-action pushes
+       mrpythonsg/taskflow-api:latest and :<git sha>). The publish job needs the repo secrets
+       DOCKER_USERNAME and DOCKER_TOKEN; it skips itself cleanly if they are missing.
+```
+
+---
+
+## Module 3 - the API itself
+
 A small task-management backend built with Spring Boot for the NTU AI Engineering Module 3 assignment.
 
 ## What this is, in plain English
@@ -31,7 +92,9 @@ src/main/java/sg/edu/ntu/taskflowapi/
 
 ## Run
 
-Requires JDK 21 and Maven.
+With Docker (no Java needed): `docker compose up --build`, then open <http://localhost:8080>.
+
+With Maven, requires JDK 21.
 
 The app reads the OpenAI key from the `OPENAI_API_KEY` environment variable
 (`application.properties` has `spring.ai.openai.api-key=${OPENAI_API_KEY}`).

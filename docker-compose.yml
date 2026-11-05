@@ -1,0 +1,12 @@
+# Local run without Java installed:  docker compose up --build  ->  http://localhost:8080
+services:
+  taskflow-api:
+    build: .
+    image: taskflow-api:local
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - SPRING_PROFILES_ACTIVE=demo
+      # Set OPENAI_API_KEY in your shell to enable /api/tasks/summary
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-not-set}
